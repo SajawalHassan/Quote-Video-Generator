@@ -1,7 +1,8 @@
 # 🎬 Quote Video Generator
 
-[Example video](Readme.md) <video controls src="example.mp4" title="Example video"></video>
 A simple and customizable **quote video generator** that creates MP4 videos from configurable quote data.
+
+[Watch an example video](example.mp4)
 
 ---
 
