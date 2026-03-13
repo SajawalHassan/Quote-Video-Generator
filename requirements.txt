@@ -1,0 +1,10 @@
+decorator==5.2.1
+future==1.0.0
+ImageIO==2.37.3
+imageio-ffmpeg==0.6.0
+moviepy==2.2.1
+numpy==2.4.3
+pillow==11.3.0
+proglog==0.1.12
+python-dotenv==1.2.2
+tqdm==4.67.3
