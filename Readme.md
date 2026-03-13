@@ -3,6 +3,7 @@
 A simple and customizable **quote video generator** that creates MP4 videos from configurable quote data.
 
 ![Demo](example.gif)
+(The background looks cursed because of github, actual video will have proper backgrounds)
 
 ---
 
