@@ -1,26 +1,25 @@
-import os
 from moviepy import AudioFileClip
 from moviepy.video.VideoClip import ImageClip, TextClip
 from moviepy.video.compositing import CompositeVideoClip
 from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 from PIL import Image
-import textwrap
 import numpy as np
+import os, textwrap, glob, random
 
 class VideoGenerator:
-    def __init__(self, quote, author_name, output_name, font, audio_path):
+    def __init__(self, quote, author_name, output_name, imagesPath, font, audio_path, randomImages):
         self.quote = quote
         self.output_name = output_name
         self.author_name = author_name
         self.height = 1920
         self.width = 1080
         self.duration = 7 # Seconds
-        self.folder_path = "./images/images2"
+        self.folder_path = imagesPath
         self.font = font
         self.audio_path = audio_path
+        self.randomImages = randomImages
 
     def crop_image(self, img_path):
-        # 1. Load with PIL and force RGB mode
         with Image.open(img_path) as img:
             img = img.convert("RGB")
             orig_w, orig_h = img.size
@@ -43,40 +42,57 @@ class VideoGenerator:
                 right = orig_w
                 bottom = top + new_h
             
-            # 2. Crop and Resize
             img = img.crop((left, top, right, bottom))
             img = img.resize((self.width, self.height), Image.Resampling.LANCZOS)
             
-            # 3. Convert back to a MoviePy ImageClip
-            # We convert the PIL image to a numpy array first
             return ImageClip(np.array(img))
 
-    def get_images(self):
-        images = []
-        for f in sorted(os.listdir(self.folder_path)):
-            if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
-                img_path = os.path.join(self.folder_path, f)
+    def get_image_list(self):
+        if self.randomImages == True:
+            file_pattern = 'images[0-9]*/*'
 
-                cropped_img = self.crop_image(img_path)
-                frame = cropped_img.get_frame(0) # Getting frame first for opacity effect
+            all_files = [f for f in glob.glob(f"./images/{file_pattern}", recursive=True) if os.path.isfile(f)]
 
-                frame_with_opacity = (frame * 0.3).astype("uint8") 
+            # Randomly select 10
+            num_to_select = min(len(all_files), 10)
+            selection = random.sample(all_files, num_to_select)
+
+            return selection
+        else:
+            img_list = []
             
-                images.append(frame_with_opacity)
+            for f in sorted(os.listdir(self.folder_path)):
+                if not f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+                    continue
+
+                img_path = os.path.join(self.folder_path, f)
+                img_list.append(img_path)
+            
+            return img_list
+                    
+
+    # Crops images given from get_image_list and applies opacity to them
+    def format_images(self):
+        images = []
+        img_list = self.get_image_list()
+        
+        for img_path in img_list:
+            cropped_img = self.crop_image(img_path)
+            frame = cropped_img.get_frame(0) # Getting frame first for opacity effect
+
+            frame_with_opacity = (frame * 0.3).astype("uint8")
+        
+            images.append(frame_with_opacity)
         
         return images
 
-    def generate_bg(self):
-        _images = self.get_images()
+    def generate_bg_clip(self):
+        _images = self.format_images()
         
         repeated_images = (lambda lst, n: [item for _ in range(n) for item in lst])(_images, 10)
         durations = (lambda arr: [0.2] * len(arr))(repeated_images)
-        for img in repeated_images:
-            print(img.size)
 
-        print("------asdasdasd--------")
         clip = ImageSequenceClip(repeated_images, durations=durations)
-        print("------zxcvbnm--------")
 
         
         return clip.with_duration(self.duration)
@@ -111,7 +127,7 @@ class VideoGenerator:
         return txt, txt_author
 
     def generate(self):
-        bg_clip = self.generate_bg()
+        bg_clip = self.generate_bg_clip()
         text_clip, author_text_clip = self.generate_text()
         audio_clip = AudioFileClip(self.audio_path)
 
