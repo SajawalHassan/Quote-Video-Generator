@@ -3,137 +3,85 @@
 A simple and customizable **quote video generator** that creates MP4 videos from configurable quote data.
 
 ![Demo](example.gif)
-(The background looks cursed because of github, actual video will have proper backgrounds)
+(The background looks cursed because of being converted into a GIF, the produced video will not have this problem)
 
 ---
 
-## 📌 Overview
+## Overview
 
-This project generates a video based on a quote, author, and output configuration defined in `generate_video.py` / `publish_video.py`.
+This project generates a video as shown in the above GIF of 9:16 aspect ratio and automatically publishes it to Instagram using Github as a data storage. In `execution/input.py` you can edit all parameters of the video, they are:
 
-- Add or remove images from the `images/` folder
-- Modify the **quote**
-- Change the **author**
-- Adjust **output settings**
-- Run the program
-- Automatically generate an **MP4 video**
+Video generation:
 
-The video is created by executing `main.py`.
+- `quote`: The actual quote
+- `author`: Author of the quote
+- `outputName`: The name of the generated video
+- `font`: The font to be used. Present in `fonts/`
+- `audio`: The background audio to be used. Present in `audios/`
+- `imagesPath`: Path to the image folder to be used. Will use all files in that folders sequentially unless `random=True`
+- `random`: Whether to choose the images at random from `images/`. Will search all subfolders inside `images/`
 
----
+Video publishment:
 
-## 🚀 Features
+- `caption`: Contains quote, a text asking for a follow, and a description about the author. The follow text and description can be edited in the `captions.py` folder
+- `file_path`: The file path to be published to Instagram
 
-- Background shuffling
-- Background audio
+## Usage
 
----
+### Video Generation
 
-## 📂 Project Structure
+All libraries used and required are present in the `requirements.txt` file. Run the following commands to setup your environment:
 
-```
-project/
-│
-├── main.py          # Main script to generate the video
-├── audio.mp3        # Background audio used for final clip
-├── requirements.txt # Required Python packages
-├── fonts/           # Fonts folder
-├── LICENSE
-└── README.md
-```
-
----
-
-## 🛠 Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd <project-folder>
-```
-
-### 2. Create a Virtual Environment (Recommended)
-
-```bash
+```Py
 python -m venv venv
-```
-
-Activate it:
-
-**Windows:**
-
-```bash
-venv\Scripts\activate
-```
-
-**Mac/Linux:**
-
-```bash
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
+source venv/source/activate # Or venv\Scripts\activate for windows
 pip install -r requirements.txt
 ```
 
----
+Once the environment is setup, configure the parameters in `execution/input.py` and run the `execution/generate_video.py` file to generate the video.
 
-## 🎬 How to Use
+### Video Publishing
 
-### 1. Configure the Quote
+To publish the video, you'll have to get the following things and put them in your `.env`. An example .env file is present: `.env.example`. The parameters required are:
 
-Open `generate_video.py` / `publish_video.py` and modify:
+- `ACCESS_TOKEN`: The facebook GraphAPI access token
+- `BUSINESS_ACC_ID`: The business instagram account id
+- `GITHUB_PAT`: Github Personal Access Token
+- `GITHUB_REPO_PATH`: The github api link to the repository where the videos are stored.
 
-- `quote`
-- `author`
-- all other options available.
+To get the access token and business account id, follow this Youtube video: https://www.youtube.com/watch?v=BuF9g9_QC04. I doubt anyone can actually get it from just the documentation, it's rubbish.
 
----
+Github is used because the Facebook GraphAPI, as far as I can tell from whatever the hell their documentation is, doesn't allow direct uploads from the API. So you need to store it elsewhere and give them the link. Github I found to be a free option, but its sketchy at times. If you're willing to pay a little, Uploadcare is better.
 
-### 2. Run the Generator
+## Contributing
 
-```bash
-python main.py
-```
+The actual code is to be found in the `execution/` folder. Its folder structure is as follows:
 
-After execution, the program will generate an **MP4 video file** in the specified output location.
+- `vid_generator.py`: The `VideoGenerator` class
+- `vid_publisher.py`: The `VideoPublisher` class
+- `generate_video.py`: Uses the class `VideoGenerator` with the input from `input.py` to generate the video.
+- `publish_video.py`: Uses the class `VideoPublisher` with the input from `input.py` to generate the video.
+- `captions.py`: Captions that can be used in publishing
+- `input.py`: Contains a dict `input_dict` containing all parameters mentioned above.
 
----
+As a developer, you'll mainly be working in the `vid_generator.py` and `vid_publisher.py` files. I got exams and am too lazy to implement tests, so just run edge cases yourself.
 
-## 📦 Requirements
+### Future changes
 
-All required packages are listed in:
+Here are some features you can contribute on implementing:
 
-```
-requirements.txt
-```
+- [ ] Hook up the quotes to some API
+- [ ] Use some AI to choose which audios, images, and fonts would be best for a quote
+- [ ] Add more images. They can be of any size since the `VideoGenerator` class does resize them, but it sometimes bugs out.
+- [ ] On that topic, actually fixing the `crop_image` function inside the `VideoGenerator` would be great lmao.
+- [ ] Add different formats. Currently its just image shuffling. Other quotes formats involving fading transitions, pictures for posts, or other variations.
 
-Install them using:
+## License
 
-```bash
-pip install -r requirements.txt
-```
+This project has the MIT License. See `LICENSE` for more info.
 
----
+## Author
 
-## 🎯 Output
+I made this because I drank coffee at 2am and didn't want to study Physics xD.
 
-- The program generates an **MP4 video**
-- Video content is based on the configured quote and author
-
----
-
-## 📄 License
-
-See LICENSE file for info
-
----
-
-## 👨‍💻 Author
-
-Sajawal Hassan
-
-Project: Quote Video Generator
+Check out my website: https://sajawalhassan.vercel.app
