@@ -18,8 +18,8 @@ Video generation:
 - `quote`: The actual quote
 - `author`: Author of the quote
 - `outputName`: The name of the generated video
-- `font`: The font to be used. Present in `fonts/`
-- `audio`: The background audio to be used. Present in `audios/`
+- `font`: The font to be used. Existing fonts present in `fonts/`
+- `audio`: The background audio to be used. Existing audios present in `audios/`
 - `imagesPath`: Path to the image folder to be used. Will use all files in that folders sequentially unless `random=True`
 - `random`: Whether to choose the images at random from `images/`. Will search all subfolders inside `images/`
 
@@ -62,7 +62,7 @@ The actual code is to be found in the `execution/` folder. Its folder structure 
 - `vid_generator.py`: The `VideoGenerator` class
 - `vid_publisher.py`: The `VideoPublisher` class
 - `generate_video.py`: Uses the class `VideoGenerator` with the input from `input.py` to generate the video.
-- `publish_video.py`: Uses the class `VideoPublisher` with the input from `input.py` to generate the video.
+- `publish_video.py`: Uses the class `VideoPublisher` with the input from `input.py` to publish the video.
 - `captions.py`: Captions that can be used in publishing
 - `input.py`: Contains a dict `input_dict` containing all parameters mentioned above.
 
