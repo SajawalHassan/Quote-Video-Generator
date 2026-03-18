@@ -7,7 +7,7 @@ import numpy as np
 import os, textwrap, glob, random
 
 class VideoGenerator:
-    def __init__(self, quote, author_name, output_name, imagesPath, font, audio_path, randomImages):
+    def __init__(self, quote, author_name, output_name, imagesPath, font, audio_path, randomImages, opacity, bg_img_duration):
         self.quote = quote
         self.output_name = output_name
         self.author_name = author_name
@@ -18,6 +18,8 @@ class VideoGenerator:
         self.font = font
         self.audio_path = audio_path
         self.randomImages = randomImages
+        self.opacity = opacity
+        self.bg_img_duration = bg_img_duration
 
     def crop_image(self, img_path):
         with Image.open(img_path) as img:
@@ -80,7 +82,7 @@ class VideoGenerator:
             cropped_img = self.crop_image(img_path)
             frame = cropped_img.get_frame(0) # Getting frame first for opacity effect
 
-            frame_with_opacity = (frame * 0.3).astype("uint8")
+            frame_with_opacity = (frame * self.opacity).astype("uint8")
         
             images.append(frame_with_opacity)
         
@@ -90,7 +92,7 @@ class VideoGenerator:
         _images = self.format_images()
         
         repeated_images = (lambda lst, n: [item for _ in range(n) for item in lst])(_images, 10)
-        durations = (lambda arr: [0.2] * len(arr))(repeated_images)
+        durations = (lambda arr: [self.bg_img_duration] * len(arr))(repeated_images)
 
         clip = ImageSequenceClip(repeated_images, durations=durations)
 

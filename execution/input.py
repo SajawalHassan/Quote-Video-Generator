@@ -1,17 +1,19 @@
 from captions import captions, follow_text
 
-quote = "My being was never so low as to seek praise from some mere humans."
+quote = "I suppose I love this life, in spite of my clenched fist" 
 outputName = "output.mp4"
 
 input_dict = {
   "quote": quote,
-  "author": "Fyodor Dostoevsky",
+  "author": "Andrea Gibson",
   "outputName": outputName,
   "font": "fonts/font.ttf",
-  "audio": "audios/3.mp3",
-  "imagesPath": "./images/images1",
-  "random": False,
+  "audio": "audios/10.mp3",
+  "imagesPath": "./images/images2",
+  "random": True,
+  "bg_img_opacity": 0.2,
+  "bg_img_duration": 0.25,
 
-  "caption": f"""{quote}\n{follow_text}\n\n{captions["Fyodor Dostoevsky"]}""",
+  "caption": f"""{quote}\n{follow_text}\n\n{captions["Andrea Gibson"]}""",
   "file_path": outputName
 }
