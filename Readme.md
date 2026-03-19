@@ -78,7 +78,7 @@ Here are some features you can contribute on implementing:
 - [ ] On that topic, actually fixing the `crop_image` function inside the `VideoGenerator` would be great lmao.
 - [ ] Add different formats. Currently its just image shuffling. Other quotes formats involving fading transitions, pictures for posts, or other
       variations.
-- [ x ] Add image generation support
+- [x] Add image generation support
 
 ## License
 
