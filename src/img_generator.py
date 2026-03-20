@@ -120,8 +120,11 @@ class ImageGenerator():
         image = self.get_image(author_name)
         image = self.format_image(image, self.img_size)
         image = self.draw_quote_and_author_text(image, self.quote, self.author)
-        image = self.draw_watermark_text(image, self.watermark_text).save("smth.png")
+        image = self.draw_watermark_text(image, self.watermark_text).save("output.png")
 
-# Run the generator
-imgGen = ImageGenerator("Mostly it is loss which teaches us about the worth of things.", "George Orwell")
-imgGen.generate()
+
+if __name__ == "__main__":
+    from input import input_dict
+    
+    imgGen = ImageGenerator(input_dict["quote"], input_dict["author"])
+    imgGen.generate()

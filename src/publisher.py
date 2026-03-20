@@ -1,12 +1,13 @@
 from dotenv import load_dotenv 
 import base64, os, requests, uuid, json, time
+from util import generate_caption
 
 load_dotenv()
 
-class VideoPublisher():
+class Publisher():
     def __init__(self, caption, file_path):
-        self.caption = caption
         self.file_path = file_path
+        self.caption = caption
 
     def convert_to_base64(self, file_path):
         try:
@@ -44,16 +45,24 @@ class VideoPublisher():
         response_content_decoded = json.loads(response.content.decode("utf-8")) # Decode byte to dict
         return response_content_decoded["content"]["download_url"]
 
-    def create_container(self, video_url):
+    def create_container(self, video_url=None, image_url=None):
         url = f"https://graph.facebook.com/v20.0/{os.getenv("BUSINESS_ACC_ID")}/media"
 
-        data = {
-            "video_url": video_url,
-            "caption": self.caption,
-            "access_token": os.getenv("ACCESS_TOKEN"),
-            "media_type": "REELS",
-            "share_to_feed": True
-        }
+        if video_url:
+            data = {
+                "video_url": video_url,
+                "caption": self.caption,
+                "access_token": os.getenv("ACCESS_TOKEN"),
+                "media_type": "REELS",
+                "share_to_feed": True
+            }
+        elif image_url:
+            data = {
+                "image_url": image_url,
+                "caption": self.caption,
+                "access_token": os.getenv("ACCESS_TOKEN"),
+                "media_type": "IMAGE",
+            }
 
         response = requests.post(url, json=data)
 
@@ -75,13 +84,14 @@ class VideoPublisher():
 
         return response_content_decoded["status_code"], response_content_decoded
 
-    def publish_video(self):
+    def publish(self, publish_type):
         print("Uploading video to Github...")
-        video_download_url = self.upload_to_github(self.file_path)
+        download_url = self.upload_to_github(self.file_path)
         print("Video uploaded!\n")
         
         print("Creating container...")
-        container_id = self.create_container(video_download_url)
+        if publish_type == "video": container_id = self.create_container(video_url=download_url)
+        elif publish_type == "image": container_id = self.create_container(image_url=download_url)
         print(f"Container created with id: {container_id}\n")
 
         # Poll every five seconds for status
@@ -105,3 +115,16 @@ class VideoPublisher():
         published_status_code = self.publish_container(container_id)
         print("\n---------- Video uploaded to Instagram! ----------")
         return published_status_code
+
+if __name__ == "__main__":
+    from publisher import Publisher
+    from input import input_dict
+    from util import generate_caption
+
+    caption = generate_caption(input_dict["quote"], input_dict["author"])
+    vidPublisher = Publisher(caption, input_dict["file_path"])
+
+    if input_dict["file_path"].split(".")[1] == "png":
+        vidPublisher.publish(publish_type="image")
+    elif input_dict["file_path"].split(".")[1] == "mp4":
+        vidPublisher.publish(publish_type="video")

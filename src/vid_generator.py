@@ -134,3 +134,13 @@ class VideoGenerator:
         final_clip = CompositeVideoClip.CompositeVideoClip([bg_clip, text_clip, author_text_clip])
         final_clip = final_clip.with_audio(audio_clip).with_duration(audio_clip.duration if self.duration > audio_clip.duration else self.duration)
         final_clip.write_videofile(self.output_name, codec="libx264")
+
+if __name__ == "__main__":
+    from vid_generator import VideoGenerator
+    from input import input_dict
+
+    vidGen = VideoGenerator(input_dict["quote"], input_dict["author"], input_dict["outputName"],
+                            input_dict["imagesPath"], input_dict["font"], input_dict["audio"], input_dict["random"],
+                            input_dict["bg_img_opacity"], input_dict["bg_img_duration"])
+
+    vidGen.generate()
